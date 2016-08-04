@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+
+my $remote_host = $ARGV[0] || die("Falta el host remoto a donde enganchar el tunel");
+
+my $remote_port = $ARGV[1] || die("Falta el puerto remoto al que queremos acceder desde local");
+
+my $local_port = $ARGV[3] || $remote_port;
+
+my $username = $ARGV[4] || 'ubuntu';
+
+my $container = &get_container($remote_port);
+my $ip_destino = &get_local_ip($container);
+
+
+my $cmd = "ssh -nNT -L $local_port:$ip_destino:$remote_port $username\@$remote_host";
+exec($cmd);
+
+
+sub get_container {
+    my $remote_port = shift;
+
+    my $cmd =  "ssh $username\@$remote_host \"sudo docker ps --format '{{.ID}} -> {{.Ports}}'\"";
+    my $info = `$cmd`;
+    
+    foreach my $line (split "\n", $info){
+        my ($container, $ports) = split '\-\>', $line;
+    
+        if($ports =~ /$remote_port\/tcp/){
+            return $container;
+        }
+    }
+
+}
+
+sub get_local_ip{
+
+    my $container_id = shift;
+
+    my $cmd = "ssh $username\@$remote_host \"sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' $container_id\"";
+
+    my $data = `$cmd`;
+  
+    chomp($data);
+    return $data;
+}

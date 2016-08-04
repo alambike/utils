@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+my $remote_host = $ARGV[0] || die("Falta el host remoto a donde enganchar el tunel");
+
+my $destination = $ARGV[1] || 'localhost:3306'; 
+
+$destination =~ s/\:(\d+)$//;
+my $remote_port = $1 || '3306';
+
+my $username = $ARGV[2] || 'ubuntu';
+
+my $local_port = $ARGV[3] || $remote_port;
+
+
+my $cmd = "ssh -nNT -L $local_port:$destination:$remote_port $username\@$remote_host";
+print "$cmd\n";
+exec($cmd);
