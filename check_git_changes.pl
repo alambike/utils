@@ -45,11 +45,11 @@ sub match_status {
 }
 
 sub notify{
-	my ($status) = @_;
+	my ($status, $bot_auth) = @_;
 
 	$status =~ s/\"/\\"/g;
 
-my $cmd = 'curl -X POST https://api.telegram.org/bot148573770:AAHj4JcFcvKpGtUS8hUtxP0tW7Zmmy-5qJ4/sendMessage \
+my $cmd = 'curl -X POST https://api.telegram.org/'.$bot_auth.'/sendMessage \
 -H "Content-Type: application/json" \
 -d \'{"chat_id":"2129731","text":"Alerta!!!\n Archivos sospeitosos en mukhas.com\n '.$status.'"}\'';
 
