@@ -4,9 +4,9 @@ my $remote_host = $ARGV[0] || die("Falta el host remoto a donde enganchar el tun
 
 my $remote_port = $ARGV[1] || die("Falta el puerto remoto al que queremos acceder desde local");
 
-my $local_port = $ARGV[3] || $remote_port;
 
-my $username = $ARGV[4] || 'ubuntu';
+my $username = $ARGV[2] || 'ubuntu';
+my $local_port = $ARGV[3] || $remote_port;
 
 my $container = &get_container($remote_port);
 my $ip_destino = &get_local_ip($container);
