@@ -35,7 +35,7 @@ sub parse_command_line{
 
 sub git_status{
 
-	`cd $path && git status`
+	`cd $path && git status | fgrep .php`
 }
 
 sub match_status {
@@ -49,9 +49,11 @@ sub notify{
 
 	$status =~ s/\"/\\"/g;
 
+	my $short_status = substr( $status, 0, 100 ); 
+
 my $cmd = 'curl -X POST https://api.telegram.org/'.$bot_auth.'/sendMessage \
 -H "Content-Type: application/json" \
--d \'{"chat_id":"2129731","text":"Alerta!!!\n Archivos sospeitosos en mukhas.com\n '.$status.'"}\'';
+-d \'{"chat_id":"2129731","text":"Alerta!!!\n Archivos sospeitosos en mukhas.com\n '.$short_status.'"}\'';
 
 print `$cmd`;
 }
