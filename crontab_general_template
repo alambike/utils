@@ -1,0 +1,13 @@
+MAILTO=""
+HOME=<##path to docker-compose##>
+
+# sincronizar hora
+00 */12 * * * /usr/sbin/ntpdate -u hora.rediris.es
+
+# backup 
+0 2 * * * bash -c "/usr/local/bin/docker-compose run --rm auxiliar run proceso=Wordpress.backup"
+
+# renovar certificado letsencrypt
+30 0 * * 3 bash -c "/usr/local/bin/docker-compose restart proxy-letsencrypt"
+
+
