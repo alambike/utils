@@ -1,0 +1,43 @@
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+:DOCKER-USER - [0:0]
+
+##
+# INPUT
+##
+# Allow localhost
+-A INPUT -i lo -j ACCEPT
+
+# Allow established connections
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# Allow ICMP ping
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+
+# SSH
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+
+##
+# OUTPUT
+##
+-A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+
+##
+# DOCKER-USER rules
+##
+
+# Allow established connections
+-A DOCKER-USER -i eth0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# http/https dosespacios
+-A DOCKER-USER -i eth0 -s 213.60.255.0/24 -p tcp -m multiport --dports 80,443 -j ACCEPT
+
+# http/https 4eixos (xunta)
+-A DOCKER-USER -i eth0 -s 85.91.64.0/19 -p tcp -m multiport --dports 80,443 -j ACCEPT
+
+# DOCKER-USER default DROP
+-A DOCKER-USER -i eth0 -j DROP
+
+COMMIT
